@@ -1,0 +1,50 @@
+<html>
+    <textarea name="chat" rows="1" cols="30"></textarea>
+    <button onclick="btnClick()">전송</button>
+    <h3>접속자</h3>
+    <ul id="member_list"></ul>
+    <h3>채팅</h3>
+    <ul id="chat_list"></ul>
+</html>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    const socket = io.connect("http://192.168.0.42:8080", {
+        path: "/socket.io"
+    });
+    let memberList = [];
+
+    function btnClick() {
+        const msg = document.getElementsByName("chat");
+
+        console.log(msg[0].value);
+        socket.emit("sendChat", msg[0].value);
+
+        msg[0].value = "";
+    }
+
+    socket.on("recvChat", data => {
+        const chat_list = document.getElementById("chat_list");
+        const chat_elem = document.createElement("li");
+        const chat_msg = document.createTextNode(data);
+
+        chat_elem.appendChild(chat_msg);
+        chat_list.append(chat_elem);
+    });
+
+    socket.on("newMember", data => {
+        const member_list = document.getElementById("member_list");
+        const member_elem = document.createElement("li");
+        const memeber_nickname = document.createTextNode(nickname);
+
+        member_elem.appendChild(memeber_nickname);
+        member_list.append(member_elem);
+
+        memberList.push(data);
+    });
+
+    socket.on("exitMember", data => {
+        const removeIdx = memberList.indexOf(data);
+        memberList.splice(removeIdx, 1);
+    });
+</script>

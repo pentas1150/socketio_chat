@@ -1,0 +1,12 @@
+<html>
+    <form action="login" method="POST" onsubmit="checkForm()">
+        <input name="nickname" type="text" placeholder="닉네임을 입력하세요" />
+        <input type="submit" value="전송" />
+    </form>
+</html>
+<script>
+    function checkForm() {
+        const nickname = document.getElementsByName("nickname")[0].value;
+        if (nickname.length === 0) return alert("닉네임을 입력하세요.");
+    }
+</script>
