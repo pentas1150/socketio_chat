@@ -1,5 +1,5 @@
 exports.isNotLoggedIn = (req, res, next) => {
-    if (!req.session.nickname) {
+    if (typeof req.session.nickname === "undefined") {
         res.redirect("/");
     } else {
         next();

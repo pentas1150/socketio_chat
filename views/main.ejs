@@ -1,50 +1,65 @@
 <html>
-    <textarea name="chat" rows="1" cols="30"></textarea>
-    <button onclick="btnClick()">전송</button>
+    <textarea id="chatText" rows="3" cols="30"></textarea>
+    <button id="chatButton" onclick="btnClick()">전송</button>
     <h3>접속자</h3>
-    <ul id="member_list"></ul>
+    <ul id="member_list">
+        <% memberLists.forEach(function(member) { %>
+        <li><%= member %></li>
+        <% }); %>
+    </ul>
     <h3>채팅</h3>
     <ul id="chat_list"></ul>
 </html>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    const socket = io.connect("http://192.168.0.42:8080", {
+    const socket = io.connect("http://localhost:8080", {
         path: "/socket.io"
     });
-    let memberList = [];
+
+    document.getElementById("chatText").addEventListener("keydown", e => {
+        if (e.keyCode === 13) {
+            if (!e.shiftKey) {
+                e.preventDefault();
+                document.getElementById("chatButton").click();
+            }
+        }
+    });
 
     function btnClick() {
-        const msg = document.getElementsByName("chat");
+        const msg = document.getElementById("chatText");
+        let str = msg.value;
+        str = str.replace(/(?:\r\n|\r|\n)/g, "<br />");
 
-        console.log(msg[0].value);
-        socket.emit("sendChat", msg[0].value);
+        socket.emit("sendChat", str);
 
-        msg[0].value = "";
+        msg.value = "";
     }
 
     socket.on("recvChat", data => {
         const chat_list = document.getElementById("chat_list");
         const chat_elem = document.createElement("li");
-        const chat_msg = document.createTextNode(data);
 
-        chat_elem.appendChild(chat_msg);
+        chat_elem.innerHTML = data;
         chat_list.append(chat_elem);
     });
 
     socket.on("newMember", data => {
         const member_list = document.getElementById("member_list");
         const member_elem = document.createElement("li");
-        const memeber_nickname = document.createTextNode(nickname);
+        const memeber_nickname = document.createTextNode(data);
 
         member_elem.appendChild(memeber_nickname);
         member_list.append(member_elem);
-
-        memberList.push(data);
     });
 
     socket.on("exitMember", data => {
-        const removeIdx = memberList.indexOf(data);
-        memberList.splice(removeIdx, 1);
+        const memberList = document
+            .getElementById("member_list")
+            .querySelectorAll("li");
+        memberList.forEach(memberNickname => {
+            if (memberNickname.innerText === data)
+                memberNickname.parentNode.removeChild(memberNickname);
+        });
     });
 </script>
