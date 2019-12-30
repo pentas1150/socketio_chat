@@ -19,14 +19,14 @@ module.exports = (server, app, sessionMiddleware) => {
         io.emit("newMember", nickname);
 
         console.log(`${nickname} is connected`);
-        io.emit("recvChat", `${nickname}님이 입장하셨습니다.`);
+        io.emit("recvChat", `${nickname}:님이 입장하셨습니다.`);
 
         socket.on("disconnect", () => {
             console.log(`${nickname} is disconnected`);
             const removeIdx = app.get("memberList").indexOf(nickname);
             app.get("memberList").splice(removeIdx, 1);
 
-            socket.broadcast.emit("recvChat", `${nickname}님이 나가셨습니다.`);
+            socket.broadcast.emit("recvChat", `${nickname}:님이 나가셨습니다.`);
             socket.broadcast.emit("exitMember", nickname);
         });
 

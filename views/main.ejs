@@ -1,32 +1,97 @@
 <html>
-    <textarea id="chatText" rows="3" cols="30"></textarea>
-    <button id="chatButton" onclick="btnClick()">전송</button>
-    <h3>접속자</h3>
-    <ul id="member_list">
-        <% memberLists.forEach(function(member) { %>
-        <li><%= member %></li>
-        <% }); %>
-    </ul>
-    <h3>채팅</h3>
-    <ul id="chat_list"></ul>
+    <head>
+        <title>Chat Test</title>
+        <link
+            rel="stylesheet"
+            href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+        <div id="fixed-area">
+            <div class="pos-f-t">
+                <div class="collapse" id="navbarToggleExternalContent">
+                    <div id="member_list" class="bg-dark p-4">
+                        <h5 class="text-white h4">User List</h5>
+                        <% memberLists.forEach((member) => { %>
+                        <div class="text-muted"><%= member %></div>
+                        <% }); %>
+                    </div>
+                </div>
+                <nav class="navbar navbar-dark bg-dark">
+                    <button
+                        class="navbar-toggler"
+                        type="button"
+                        data-toggle="collapse"
+                        data-target="#navbarToggleExternalContent"
+                        aria-controls="navbarToggleExternalContent"
+                        aria-expanded="false"
+                        aria-label="Toggle navigation"
+                    >
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                </nav>
+            </div>
+            <input
+                id="chatText"
+                type="text"
+                placeholder="Type your message"
+                class="form-control"
+                aria-label="Default"
+                aria-describedby="inputGroup-sizing-default"
+            />
+        </div>
+
+        <div id="chat_list"></div>
+    </body>
 </html>
+
+<style>
+    .topFixed {
+        position: fixed;
+        width: 100%;
+        top: 0px;
+    }
+</style>
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    const socket = io.connect("http://localhost:8080", {
+    const socket = io.connect("http://localhost:8000", {
         path: "/socket.io"
     });
 
+    window.onload = () => {
+        const scrolledElement = document.getElementById("fixed-area");
+        const top = scrolledElement.offsetTop;
+        const listener = function() {
+            const y = window.pageYOffset;
+
+            if (y >= top) {
+                scrolledElement.classList.add("topFixed");
+            } else {
+                scrolledElement.classList.remove("topFixed");
+            }
+        };
+        window.addEventListener("scroll", listener, false);
+    };
+
+    scrollDown = () => {
+        const scrolledElement = document.getElementById("chat_list");
+        const bottom = scrolledElement.offsetTop + scrolledElement.offsetHeight;
+
+        window.scroll(0, bottom);
+    };
+
     document.getElementById("chatText").addEventListener("keydown", e => {
         if (e.keyCode === 13) {
-            if (!e.shiftKey) {
-                e.preventDefault();
-                document.getElementById("chatButton").click();
-            }
+            e.preventDefault();
+            sendMessage();
         }
     });
 
-    function btnClick() {
+    function sendMessage() {
         const msg = document.getElementById("chatText");
         let str = msg.value;
         str = str.replace(/(?:\r\n|\r|\n)/g, "<br />");
@@ -38,17 +103,26 @@
 
     socket.on("recvChat", data => {
         const chat_list = document.getElementById("chat_list");
-        const chat_elem = document.createElement("li");
+        const chat_elem = document.createElement("p");
 
-        chat_elem.innerHTML = data;
+        const splitMsg = data.split(":");
+        const nickname = document.createElement("strong");
+        nickname.innerText = splitMsg[0];
+
+        chat_elem.appendChild(nickname);
+        chat_elem.appendChild(document.createTextNode(splitMsg[1]));
+
         chat_list.append(chat_elem);
+
+        scrollDown();
     });
 
     socket.on("newMember", data => {
         const member_list = document.getElementById("member_list");
-        const member_elem = document.createElement("li");
+        const member_elem = document.createElement("div");
         const memeber_nickname = document.createTextNode(data);
 
+        member_elem.classList.add("text-muted");
         member_elem.appendChild(memeber_nickname);
         member_list.append(member_elem);
     });
@@ -56,7 +130,7 @@
     socket.on("exitMember", data => {
         const memberList = document
             .getElementById("member_list")
-            .querySelectorAll("li");
+            .querySelectorAll(".text-muted");
         memberList.forEach(memberNickname => {
             if (memberNickname.innerText === data)
                 memberNickname.parentNode.removeChild(memberNickname);
