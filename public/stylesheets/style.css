@@ -1,13 +1,12 @@
-.topFixed {
-  position: fixed;
-  width: 100%;
-  top: 0px;
+body {
+  padding-top: 70px;
+  padding-bottom: 40px;
 }
 
-.menu {
-  position: fixed;
-  right: 0px;
-  bottom: 0px;
-  width: 7%;
-  height: 7%;
+.chat {
+  background-color: #adcceb;
+}
+
+.alert {
+  max-width: fit-content;
 }

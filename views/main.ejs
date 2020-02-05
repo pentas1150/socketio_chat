@@ -1,155 +1,187 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
-    <title>Chat Test</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+    <title>Chat</title>
+
     <link
       rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
     />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
   </head>
 
   <body>
-    <div id="fixed-area">
-      <div class="pos-f-t">
-        <div class="collapse" id="navbarToggleExternalContent">
-          <div id="member_list" class="bg-dark p-4">
-            <h5 class="text-white h4">User List</h5>
-            <% memberLists.forEach((member) => { %>
-            <div class="text-muted"><%= member.nickname %></div>
-            <% }); %>
-          </div>
-        </div>
-        <nav class="navbar navbar-dark bg-dark">
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarToggleExternalContent"
-            aria-controls="navbarToggleExternalContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-        </nav>
-      </div>
-      <input
-        id="chatText"
-        type="text"
-        placeholder="Type your message"
-        class="form-control"
-        aria-label="Default"
-        aria-describedby="inputGroup-sizing-default"
-      />
-    </div>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">Navbar</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="container">
-      <div id="chat_list"></div>
-
-      <div class="menu">
-        <div class="btn-group dropleft">
-          <button
-            type="button"
-            class="btn btn-secondary dropdown-toggle"
-            data-toggle="dropdown"
-            aria-haspopup="true"
-            aria-expanded="false"
-          >
-            Menu
-          </button>
-          <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Change Nickname</a>
-            <a class="dropdown-item" href="#">Exit</a>
-          </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#"
+                >Home <span class="sr-only">(current)</span></a
+              >
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="navbarDropdown"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                Dropdown
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+          </ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input
+              class="form-control mr-sm-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-default" type="submit">Search</button>
+          </form>
         </div>
       </div>
+    </nav>
+
+    <div id="content" class="container">
+      <!-- Main component for a primary marketing message or call to action -->
+      <h3>Chat</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Author</th>
+            <th scope="col">Date</th>
+          </tr>
+        </thead>
+        <tbody id="post-table">
+          <% rooms.forEach((room) => { %>
+          <tr>
+            <th scope="row">
+              <%= room.id %>
+            </th>
+            <td>
+              <a class="text-dark" href="/chat/<%= room.id %>">
+                <%= room.title %>
+              </a>
+            </td>
+            <td><%= room.author %></td>
+            <td><%= new Date(room.createdAt).toLocaleString() %></td>
+          </tr>
+          <% }); %>
+
+          <tr>
+            <th scope="row">
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                onclick="location.href='/room';"
+              >
+                Create
+              </button>
+            </th>
+            <td></td>
+            <td></td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
+    <!-- /container -->
+
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
   </body>
 </html>
 
-<script src="/socket.io/socket.io.js"></script>
-<script>
-  const socket = io.connect("http://localhost:8000", {
-    path: "/socket.io"
-  });
-
-  window.onload = () => {
-    const scrolledElement = document.getElementById("fixed-area");
-    const top = scrolledElement.offsetTop;
-    const listener = function() {
-      const y = window.pageYOffset;
-
-      if (y >= top) {
-        scrolledElement.classList.add("topFixed");
-      } else {
-        scrolledElement.classList.remove("topFixed");
-      }
-    };
-    window.addEventListener("scroll", listener, false);
-  };
-
-  scrollDown = () => {
-    const scrolledElement = document.getElementById("chat_list");
-    const bottom = scrolledElement.offsetTop + scrolledElement.offsetHeight;
-
-    window.scroll(0, bottom);
-  };
-
-  document.getElementById("chatText").addEventListener("keydown", e => {
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
-
-  function sendMessage() {
-    const msg = document.getElementById("chatText");
-    let str = msg.value;
-    str = str.replace(/(?:\r\n|\r|\n)/g, "<br />");
-
-    socket.emit("sendChat", str);
-
-    msg.value = "";
+<style>
+  body {
+    padding-top: 70px;
   }
+</style>
 
-  socket.on("recvChat", data => {
-    const chat_list = document.getElementById("chat_list");
-    const chat_elem = document.createElement("p");
+<script>
+  let postEx = {
+    id: "10",
+    title: "asd",
+    author: "beewol",
+    createdAt: "2020-01-31",
+    content:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
+  };
+  const postTable = document.getElementById("post-table");
 
-    const splitMsg = data.split(":");
-    const nickname = document.createElement("strong");
-    nickname.innerText = splitMsg[0];
+  const makePostElem = post => {
+    const row = document.createElement("tr");
+    const number = document.createElement("th");
+    const title = document.createElement("td");
+    const titleTagA = document.createElement("a");
+    const author = document.createElement("td");
+    const date = document.createElement("td");
 
-    chat_elem.appendChild(nickname);
-    chat_elem.appendChild(document.createTextNode(splitMsg[1]));
+    number.scope = "row";
+    titleTagA.href = "#";
+    titleTagA.classList.add("text-dark");
 
-    chat_list.append(chat_elem);
+    number.textContent = post.id;
+    titleTagA.textContent = post.title;
+    author.textContent = post.author;
+    date.textContent = post.createdAt;
 
-    scrollDown();
-  });
+    postTable.appendChild(row);
+    title.appendChild(titleTagA);
+    row.appendChild(number);
+    row.appendChild(title);
+    row.appendChild(author);
+    row.appendChild(date);
+  };
 
-  socket.on("newMember", data => {
-    const member_list = document.getElementById("member_list");
-    const member_elem = document.createElement("div");
-    const memeber_nickname = document.createTextNode(data);
-
-    member_elem.classList.add("text-muted");
-    member_elem.appendChild(memeber_nickname);
-    member_list.append(member_elem);
-  });
-
-  socket.on("exitMember", data => {
-    const memberList = document
-      .getElementById("member_list")
-      .querySelectorAll(".text-muted");
-    memberList.forEach(memberNickname => {
-      if (memberNickname.innerText === data)
-        memberNickname.parentNode.removeChild(memberNickname);
-    });
-  });
+  //window.onscroll = function(ev) {
+  //    if (window.innerHeight + window.scrollY >= document.body.offsetHeight) {
+  //        makePostCard(postEx);
+  //    }
+  //};
 </script>

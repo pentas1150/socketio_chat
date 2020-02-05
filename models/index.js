@@ -16,5 +16,9 @@ db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 db.User = require("./user")(sequelize, Sequelize);
+db.Room = require("./room")(sequelize, Sequelize);
+
+db.User.hasOne(db.Room, { foreignKey: "author", sourceKey: "id" });
+db.Room.belongsTo(db.User, { foreignKey: "author", targetKey: "id" });
 
 module.exports = db;

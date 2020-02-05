@@ -1,18 +1,13 @@
-const createError = require("http-errors");
-const express = require("express");
-const path = require("path");
-const cookieParser = require("cookie-parser");
-const logger = require("morgan");
-const session = require("express-session");
+import * as createError from "http-errors";
+import * as express from "express";
+import * as path from "path";
+import * as cookieParser from "cookie-parser";
+import * as logger from "morgan";
+import * as session from "express-session";
 require("dotenv").config();
-
 const webSocket = require("./websocket");
 
-const indexRouter = require("./routes/index");
-const sequelize = require("./models").sequelize;
-
 const app = express();
-sequelize.sync();
 
 const sessionMiddleware = session({
   resave: false,
@@ -24,9 +19,15 @@ const sessionMiddleware = session({
   }
 });
 
+let roomNum = 0;
+let roomList = [];
+
+app.set("roomList", roomList);
+app.set("roomNum", roomNum);
+
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.set("port", process.env.PORT || 8000);
+app.set("port", process.env.PORT || 3000);
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -35,7 +36,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser(process.env.COOKIE));
 app.use(sessionMiddleware);
 
-app.use("/", indexRouter);
+app.use("/", require("./routes/index"));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

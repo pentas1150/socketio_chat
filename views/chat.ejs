@@ -1,0 +1,151 @@
+<html>
+  <head>
+    <title>Chat Test</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  </head>
+
+  <body class="chat">
+    <div class="pos-f-t">
+      <div class="collapse" id="navbarToggleExternalContent">
+        <div id="member_list" class="bg-dark p-4">
+          <h5 class="text-white h4">User List</h5>
+        </div>
+      </div>
+      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container">
+          <a class="navbar-brand" href="/main">Exit</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <!--
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+              <li class="nav-item dropdown">
+                <a
+                  class="nav-link dropdown-toggle"
+                  href="#"
+                  id="navbarDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded="false"
+                >
+                  Dropdown
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <a class="dropdown-item" href="#">Action</a>
+                  <a class="dropdown-item" href="#">Another action</a>
+                  <div class="dropdown-divider"></div>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        --></div>
+      </nav>
+    </div>
+
+    <div class="container chat">
+      <div id="chat_list"></div>
+      <input
+        id="chatText"
+        type="text"
+        placeholder="Type your message"
+        class="form-control fixed-bottom"
+        aria-label="Default"
+        aria-describedby="inputGroup-sizing-default"
+      />
+    </div>
+  </body>
+</html>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io.connect("http://pentas.iptime.org/chat", {
+    path: "/socket.io"
+  });
+
+  scrollDown = () => {
+    const scrolledElement = document.getElementById("chat_list");
+    const bottom = scrolledElement.offsetTop + scrolledElement.offsetHeight;
+
+    window.scroll(0, bottom);
+  };
+
+  document.getElementById("chatText").addEventListener("keydown", e => {
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      if (document.getElementById("chatText").value.length !== 0) sendMessage();
+    }
+  });
+
+  function sendMessage() {
+    const msg = document.getElementById("chatText");
+    let str = msg.value;
+    str = str.replace(/(?:\r\n|\r|\n)/g, "<br />");
+
+    socket.emit("sendChat", str);
+
+    msg.value = "";
+  }
+
+  socket.on("recvChat", _data => {
+    const data = JSON.parse(_data);
+    const chat_list = document.getElementById("chat_list");
+    const chat_elem = document.createElement("div");
+    const nickname = document.createElement("div");
+
+    chat_elem.classList.add("alert");
+    chat_elem.classList.add(
+      "<%=myId%>" === data.id ? "alert-warning" : "alert-light"
+    );
+    nickname.classList.add("alert-heading");
+
+    nickname.style.color = data.color;
+    nickname.innerText = data.id;
+
+    chat_elem.appendChild(nickname);
+    chat_elem.appendChild(document.createTextNode(` ${data.msg}`));
+
+    chat_list.append(chat_elem);
+
+    scrollDown();
+  });
+
+  socket.on("newMember", data => {
+    const member_list = document.getElementById("member_list");
+    const member_elem = document.createElement("div");
+    const memeber_nickname = document.createTextNode(data);
+
+    member_elem.classList.add("text-muted");
+    member_elem.appendChild(memeber_nickname);
+    member_list.append(member_elem);
+  });
+
+  socket.on("exitMember", data => {
+    const memberList = document
+      .getElementById("member_list")
+      .querySelectorAll(".text-muted");
+    memberList.forEach(memberNickname => {
+      if (memberNickname.innerText === data)
+        memberNickname.parentNode.removeChild(memberNickname);
+    });
+  });
+</script>
