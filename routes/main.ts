@@ -16,7 +16,7 @@ router.post("/", async (req, res, next) => {
     owner: req.session.passport.user
   });
 
-  return res.redirect(`/chat/${result.dataValues.id}`);
+  return res.redirect(`/chat/${result.getDataValue("id")}`);
 });
 
 module.exports = router;
