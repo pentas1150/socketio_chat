@@ -1,5 +1,5 @@
 import * as SocketIO from "socket.io";
-import * as sharedSession from "express-socket.io-session";
+import axios from "axios";
 import { Message } from "./domain/interface";
 
 module.exports = (server, app, sessionMiddleware) => {
@@ -9,7 +9,7 @@ module.exports = (server, app, sessionMiddleware) => {
 
   const chat = io.of("/chat");
 
-  chat.use((socket, next) => {
+  io.use((socket, next) => {
     sessionMiddleware(socket.request, socket.request.res, next);
   });
 
@@ -18,14 +18,11 @@ module.exports = (server, app, sessionMiddleware) => {
     const {
       headers: { referer }
     } = req;
-    const roomId: number = Number(
-      referer.split("/")[referer.split("/").length - 1]
-    );
-    const nickname: string = req.session.nickname;
+    const roomId: string = referer.split("/")[referer.split("/").length - 1];
+    const nickname: string = req.session.passport.user;
 
     socket.join(roomId);
 
-    //console.log(response.data);
     io.of("/chat")
       .to(roomId)
       .emit("newMember", nickname);
@@ -45,15 +42,17 @@ module.exports = (server, app, sessionMiddleware) => {
       //console.log(`${nickname} is disconnected`);
       const currentRoom = socket.adapter.rooms[roomId];
       const userCount = currentRoom ? currentRoom.length : 0;
-      //console.log(userCount);
-
-      const exitMessage: Message = {
-        id: nickname,
-        color: req.session.color,
-        msg: "님이 나가셨습니다."
-      };
-      socket.to(roomId).emit("recvChat", JSON.stringify(exitMessage));
-      socket.to(roomId).emit("exitMember", nickname);
+      if (userCount === 0) {
+        await axios.delete(`http://localhost:3000/room/${roomId}`);
+      } else {
+        const exitMessage: Message = {
+          id: nickname,
+          color: req.session.color,
+          msg: "님이 나가셨습니다."
+        };
+        socket.to(roomId).emit("recvChat", JSON.stringify(exitMessage));
+        socket.to(roomId).emit("exitMember", nickname);
+      }
 
       socket.leave(roomId);
     });

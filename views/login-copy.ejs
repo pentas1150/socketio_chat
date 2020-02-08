@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/stylesheets/login.css" />
+    <link
+      rel="stylesheet"
+      href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"
+    />
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <form class="form-signin" name="login" action="/login/kakao" method="get">
+        <h2 class="form-signin-heading">Chat Login</h2>
+        <button class="btn btn-lg btn-warning btn-block" type="submit">
+          Login with Kakao
+        </button>
+      </form>
+    </div>
+  </body>
+</html>
+
+<script>
+  function moveToSignup() {
+    window.location = "/signup";
+  }
+</script>

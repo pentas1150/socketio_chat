@@ -4,10 +4,17 @@ import * as path from "path";
 import * as cookieParser from "cookie-parser";
 import * as logger from "morgan";
 import * as session from "express-session";
+import * as passport from "passport";
+import * as colorHash from "color-hash";
+import * as cors from "cors";
+import sequelize from "./sequelize";
+
 require("dotenv").config();
 const webSocket = require("./websocket");
 
 const app = express();
+sequelize.sync();
+require("./passport")(passport);
 
 const sessionMiddleware = session({
   resave: false,
@@ -19,12 +26,6 @@ const sessionMiddleware = session({
   }
 });
 
-let roomNum = 0;
-let roomList = [];
-
-app.set("roomList", roomList);
-app.set("roomNum", roomNum);
-
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 app.set("port", process.env.PORT || 3000);
@@ -35,8 +36,21 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser(process.env.COOKIE));
 app.use(sessionMiddleware);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use((req, res, next) => {
+  if (!req.session.color) {
+    req.session.color = new colorHash().hex(req.sessionID);
+  }
+  next();
+});
+app.use(cors());
 
 app.use("/", require("./routes/index"));
+app.use("/main", require("./routes/main"));
+app.use("/login", require("./routes/login"));
+app.use("/room", require("./routes/room"));
+app.use("/chat", require("./routes/chat"));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

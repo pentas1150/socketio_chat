@@ -1,9 +1,17 @@
-const isNotLoggedIn = (req, res, next) => {
-  if (typeof req.session.nickname === "undefined") {
-    res.redirect("/");
-  } else {
+const isLoggedIn = (req, res, next) => {
+  if (req.isAuthenticated()) {
     next();
+  } else {
+    res.redirect("/");
   }
 };
 
-export { isNotLoggedIn };
+const isNotLoggedIn = (req, res, next) => {
+  if (!req.isAuthenticated()) {
+    next();
+  } else {
+    res.redirect("/");
+  }
+};
+
+export { isLoggedIn, isNotLoggedIn };
