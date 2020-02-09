@@ -1,6 +1,7 @@
 import * as SocketIO from "socket.io";
 import axios from "axios";
 import { Message } from "./domain/interface";
+require("dotenv").config();
 
 const webSocket = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: "/socket.io" });
@@ -43,7 +44,7 @@ const webSocket = (server, app, sessionMiddleware) => {
       const currentRoom = socket.adapter.rooms[roomId];
       const userCount = currentRoom ? currentRoom.length : 0;
       if (userCount === 0) {
-        await axios.delete(`http://localhost:3000/room/${roomId}`);
+        await axios.delete(`http://${process.env.DOMAIN}/room/${roomId}`);
       } else {
         const exitMessage: Message = {
           id: nickname,

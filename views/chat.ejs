@@ -83,7 +83,7 @@
     path: "/socket.io"
   });
 
-  scrollDown = () => {
+  const scrollDown = () => {
     const scrolledElement = document.getElementById("chat_list");
     const bottom = scrolledElement.offsetTop + scrolledElement.offsetHeight;
 
@@ -97,7 +97,7 @@
     }
   });
 
-  function sendMessage() {
+  const sendMessage = () => {
     const msg = document.getElementById("chatText");
     let str = msg.value;
     str = str.replace(/(?:\r\n|\r|\n)/g, "<br />");
@@ -105,13 +105,19 @@
     socket.emit("sendChat", str);
 
     msg.value = "";
-  }
+  };
 
   socket.on("recvChat", _data => {
     const data = JSON.parse(_data);
     const chat_list = document.getElementById("chat_list");
+    const align = document.createElement("div");
     const chat_elem = document.createElement("div");
     const nickname = document.createElement("div");
+
+    align.classList.add("d-flex");
+    align.classList.add(
+      "<%=myId%>" === data.id ? "flex-row-reverse" : "flex-row"
+    );
 
     chat_elem.classList.add("alert");
     chat_elem.classList.add(
@@ -125,7 +131,8 @@
     chat_elem.appendChild(nickname);
     chat_elem.appendChild(document.createTextNode(` ${data.msg}`));
 
-    chat_list.append(chat_elem);
+    align.append(chat_elem);
+    chat_list.append(align);
 
     scrollDown();
   });
