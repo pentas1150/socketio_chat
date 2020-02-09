@@ -1,11 +1,9 @@
-import * as express from "express";
 import { Router } from "express";
-import * as colorHash from "color-hash";
 import { Room } from "../models/Room";
 import { isNotLoggedIn } from "./middleware";
 const router = Router();
 
-router.get("/", (req, res, next) => {
+router.get("/", isNotLoggedIn, (req, res, next) => {
   return res.render("room_form");
 });
 

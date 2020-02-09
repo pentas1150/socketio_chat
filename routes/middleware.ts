@@ -1,16 +1,16 @@
 const isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) {
-    next();
+    res.redirect("/main");
   } else {
-    res.redirect("/");
+    next();
   }
 };
 
 const isNotLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    next();
-  } else {
     res.redirect("/");
+  } else {
+    next();
   }
 };
 

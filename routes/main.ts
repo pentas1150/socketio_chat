@@ -1,11 +1,9 @@
-import * as express from "express";
 import { Router } from "express";
-import * as colorHash from "color-hash";
 import { isNotLoggedIn } from "./middleware";
 import { Room } from "../models/Room";
 const router = Router();
 
-router.get("/", async (req, res, next) => {
+router.get("/", isNotLoggedIn, async (req, res, next) => {
   const roomList = await Room.findAll();
   return res.render("main", { rooms: roomList });
 });

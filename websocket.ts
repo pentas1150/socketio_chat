@@ -2,7 +2,7 @@ import * as SocketIO from "socket.io";
 import axios from "axios";
 import { Message } from "./domain/interface";
 
-module.exports = (server, app, sessionMiddleware) => {
+const webSocket = (server, app, sessionMiddleware) => {
   const io = SocketIO(server, { path: "/socket.io" });
 
   app.set("io", io);
@@ -71,3 +71,5 @@ module.exports = (server, app, sessionMiddleware) => {
     });
   });
 };
+
+export default webSocket;

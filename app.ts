@@ -8,9 +8,9 @@ import * as passport from "passport";
 import * as colorHash from "color-hash";
 import * as cors from "cors";
 import sequelize from "./sequelize";
+import webSocket from "./websocket";
 
 require("dotenv").config();
-const webSocket = require("./websocket");
 
 const app = express();
 sequelize.sync();
