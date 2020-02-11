@@ -1,5 +1,6 @@
 export interface Message {
   id: string;
+  type?: string;
   color: string;
   msg: string;
 }

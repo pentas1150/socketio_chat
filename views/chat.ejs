@@ -12,6 +12,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/e3f0d3ed51.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body class="chat">
@@ -65,14 +69,24 @@
 
     <div class="container chat">
       <div id="chat_list"></div>
-      <input
-        id="chatText"
-        type="text"
-        placeholder="Type your message"
-        class="form-control fixed-bottom"
-        aria-label="Default"
-        aria-describedby="inputGroup-sizing-default"
-      />
+      <div class="fixed-bottom d-flex flex-row">
+        <input
+          id="chatText"
+          type="text"
+          placeholder="Type your message"
+          class="form-control"
+          aria-label="Default"
+          aria-describedby="inputGroup-sizing-default"
+        />
+        <input id="img" type="file" accept="image/*" />
+        <button
+          id="upload-btn"
+          class="btn btn-light"
+          onclick="uploadBtnClick()"
+        >
+          <i class="fa fa-image"></i>
+        </button>
+      </div>
     </div>
   </body>
 </html>
@@ -82,6 +96,23 @@
   const socket = io.connect("http://<%= domain %>/chat", {
     path: "/socket.io"
   });
+  document.getElementById("img").addEventListener("change", function(e) {
+    const formData = new FormData();
+    const xhr = new XMLHttpRequest();
+    const roomId = window.location.href.split("/")[
+      window.location.href.split("/").length - 1
+    ];
+    console.log(this.files[0]);
+    formData.append("img", this.files[0]);
+
+    xhr.open("POST", `/upload/img/${roomId}`);
+    xhr.send(formData);
+  });
+
+  const uploadBtnClick = () => {
+    const input = document.getElementById("img");
+    input.click();
+  };
 
   const scrollDown = () => {
     const scrolledElement = document.getElementById("chat_list");
@@ -114,6 +145,8 @@
     const chat_elem = document.createElement("div");
     const nickname = document.createElement("div");
 
+    console.log(data);
+
     align.classList.add("d-flex");
     align.classList.add(
       "<%=myId%>" === data.id ? "flex-row-reverse" : "flex-row"
@@ -129,7 +162,13 @@
     nickname.innerText = data.id;
 
     chat_elem.appendChild(nickname);
-    chat_elem.appendChild(document.createTextNode(` ${data.msg}`));
+    if (data.type === "img") {
+      const img = document.createElement("img");
+      img.src = `/images/${data.msg}`;
+      chat_elem.appendChild(img);
+    } else {
+      chat_elem.innerHTML += data.msg;
+    }
 
     align.append(chat_elem);
     chat_list.append(align);

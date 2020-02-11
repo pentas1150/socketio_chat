@@ -51,6 +51,7 @@ app.use("/main", require("./routes/main"));
 app.use("/login", require("./routes/login"));
 app.use("/room", require("./routes/room"));
 app.use("/chat", require("./routes/chat"));
+app.use("/upload", require("./routes/upload"));
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
