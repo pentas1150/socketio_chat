@@ -20,14 +20,11 @@
 
   <body class="chat">
     <div class="pos-f-t">
-      <div class="collapse" id="navbarToggleExternalContent">
-        <div id="member_list" class="bg-dark p-4">
-          <h5 class="text-white h4">User List</h5>
-        </div>
-      </div>
       <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
         <div class="container">
-          <a class="navbar-brand" href="/main">Exit</a>
+          <a class="navbar-brand" href="/main">
+            <i class="fas fa-arrow-left">Exit</i>
+          </a>
           <button
             class="navbar-toggler"
             type="button"
@@ -39,7 +36,6 @@
           >
             <span class="navbar-toggler-icon"></span>
           </button>
-          <!--
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav mr-auto">
               <li class="nav-item dropdown">
@@ -52,18 +48,21 @@
                   aria-haspopup="true"
                   aria-expanded="false"
                 >
-                  Dropdown
+                  <i class="fas fa-users">Members</i>
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item" href="#">Action</a>
-                  <a class="dropdown-item" href="#">Another action</a>
-                  <div class="dropdown-divider"></div>
-                  <a class="dropdown-item" href="#">Something else here</a>
+                <div
+                  id="member-list"
+                  class="dropdown-menu"
+                  aria-labelledby="navbarDropdown"
+                >
+                  <% userList.forEach((user) => { %>
+                  <div class="dropdown-item"><%=user%></div>
+                  <% }); %>
                 </div>
               </li>
             </ul>
           </div>
-        --></div>
+        </div>
       </nav>
     </div>
 
@@ -177,13 +176,22 @@
   });
 
   socket.on("newMember", data => {
-    const member_list = document.getElementById("member_list");
-    const member_elem = document.createElement("div");
-    const memeber_nickname = document.createTextNode(data);
+    const member_list = document.getElementById("member-list");
+    let child = member_list.lastChild;
+    while (child) {
+      member_list.removeChild(child);
+      child = member_list.lastChild;
+    }
 
-    member_elem.classList.add("text-muted");
-    member_elem.appendChild(memeber_nickname);
-    member_list.append(member_elem);
+    const msg = JSON.parse(data);
+    msg.list.forEach(member => {
+      const div = document.createElement("div");
+
+      div.classList.add("dropdown-item");
+      div.innerText = member;
+
+      member_list.append(div);
+    });
   });
 
   socket.on("exitMember", data => {

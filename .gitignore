@@ -1,4 +1,5 @@
 node_modules/
+images/
 .env
 .eslintrc.json
 config.json

@@ -24,10 +24,6 @@ const webSocket = (server, app, sessionMiddleware) => {
 
     socket.join(roomId);
 
-    io.of("/chat")
-      .to(roomId)
-      .emit("newMember", nickname);
-
     const enterMessage: Message = {
       id: nickname,
       color: req.session.color,
