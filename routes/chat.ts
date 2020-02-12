@@ -42,12 +42,13 @@ router.get("/:id", isNotLoggedIn, async (req, res, next) => {
   await Room.update({ userList: users }, { where: { id: room.id } });
 
   curUsers = await parseUsers(users);
-
   if (_users !== null) {
     io.of("/chat")
       .to(req.params.id)
       .emit("newMember", JSON.stringify({ list: curUsers }));
   }
+
+  req.session.passport.snsId = req.user.snsId;
 
   return res.render("chat", {
     myId: req.session.passport.user,
