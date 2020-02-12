@@ -46,7 +46,7 @@ router.get("/:id", isNotLoggedIn, async (req, res, next) => {
   if (_users !== null) {
     io.of("/chat")
       .to(req.params.id)
-      .emit("newMemeber", JSON.stringify({ list: curUsers }));
+      .emit("newMember", JSON.stringify({ list: curUsers }));
   }
 
   return res.render("chat", {

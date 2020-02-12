@@ -10,7 +10,7 @@ router.get("/kakao", passport.authenticate("kakao"));
 router.get(
   "/oauth",
   passport.authenticate("kakao", {
-    failureRedeirect: "/"
+    failureRedirect: "/"
   }),
   (req, res) => {
     res.redirect("/main");
