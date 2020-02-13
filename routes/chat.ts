@@ -37,7 +37,7 @@ router.get("/:roomId", isNotLoggedIn, async (req, res, next) => {
   const newUsers = await parseUsers(curUser);
   if (users !== null) {
     io.of("/chat")
-      .to(req.params.id)
+      .to(req.params.roomId)
       .emit("newMember", JSON.stringify({ list: newUsers }));
   }
 
