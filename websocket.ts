@@ -40,13 +40,18 @@ const webSocket = (server, app, sessionMiddleware) => {
       const currentRoom = socket.adapter.rooms[roomId];
       const userCount = currentRoom ? currentRoom.length : 0;
       if (userCount === 0) {
-        await axios.delete(`http://${process.env.DOMAIN}/room/${roomId}`);
+        await axios.delete(`http://${process.env.DOMAIN}/chat/${roomId}`);
       } else {
         const exitMessage: Message = {
           id: nickname,
           color: req.session.color,
           msg: "님이 나가셨습니다."
         };
+
+        axios.post(`http://${process.env.DOMAIN}/chat/${roomId}`, {
+          snsId: req.session.passport.snsId
+        });
+
         socket.to(roomId).emit("recvChat", JSON.stringify(exitMessage));
         socket.to(roomId).emit("exitMember", nickname);
       }

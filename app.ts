@@ -49,7 +49,7 @@ app.use(cors());
 app.use("/", require("./routes/index"));
 app.use("/main", require("./routes/main"));
 app.use("/login", require("./routes/login"));
-app.use("/room", require("./routes/room"));
+//app.use("/room", require("./routes/room"));
 app.use("/chat", require("./routes/chat"));
 app.use("/upload", require("./routes/upload"));
 
