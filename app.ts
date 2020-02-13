@@ -1,3 +1,4 @@
+import * as process from "process";
 import * as createError from "http-errors";
 import * as express from "express";
 import * as path from "path";
@@ -73,5 +74,14 @@ const server = app.listen(app.get("port"), () => {
 });
 
 webSocket(server, app, sessionMiddleware);
+
+process.on("SIGINT", () => {
+  const io = app.get('io');
+  io.of('/chat').emit('redirect', "main");
+
+  setTimeout(() => {
+    process.exit(0);
+  }, 2000);
+});
 
 module.exports = app;

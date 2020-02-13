@@ -1,93 +1,61 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Chat</title>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-    />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
-    <script
-      src="https://kit.fontawesome.com/e3f0d3ed51.js"
-      crossorigin="anonymous"
-    ></script>
-  </head>
 
-  <body class="chat">
-    <div class="pos-f-t">
-      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-        <div class="container">
-          <a class="navbar-brand" href="/main">
-            <i class="fas fa-arrow-left">Exit</i>
-          </a>
-          <button
-            class="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item dropdown">
-                <a
-                  class="nav-link dropdown-toggle"
-                  href="#"
-                  id="navbarDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded="false"
-                >
-                  <i class="fas fa-users">Members</i>
-                </a>
-                <div
-                  id="member-list"
-                  class="dropdown-menu"
-                  aria-labelledby="navbarDropdown"
-                >
-                  <% userList.forEach((user) => { %>
-                  <div class="dropdown-item"><%=user%></div>
-                  <% }); %>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
+<head>
+  <title>Chat</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <script src="https://kit.fontawesome.com/e3f0d3ed51.js" crossorigin="anonymous"></script>
+</head>
 
-    <div class="container chat">
-      <div id="chat_list"></div>
-      <div class="fixed-bottom d-flex flex-row">
-        <input
-          id="chatText"
-          type="text"
-          placeholder="Type your message"
-          class="form-control"
-          aria-label="Default"
-          aria-describedby="inputGroup-sizing-default"
-        />
-        <input id="img" type="file" accept="image/*" />
-        <button
-          id="upload-btn"
-          class="btn btn-light"
-          onclick="uploadBtnClick()"
-        >
-          <i class="fa fa-image"></i>
+<body class="chat">
+  <div class="pos-f-t">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/main">
+          <i class="fas fa-arrow-left">Exit</i>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
         </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                <i class="fas fa-users">Members</i>
+              </a>
+              <div id="member-list" class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <% userList.forEach((user) => { %>
+                <div class="dropdown-item"><%=user%></div>
+                <% }); %>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
+    </nav>
+  </div>
+
+  <div class="container chat">
+    <div id="chat_list"></div>
+    <div class="fixed-bottom d-flex flex-row">
+      <input id="chatText" type="text" placeholder="Type your message" class="form-control" aria-label="Default"
+        aria-describedby="inputGroup-sizing-default" />
+      <input id="img" type="file" accept="image/*" />
+      <button id="upload-btn" class="btn btn-light" onclick="uploadBtnClick()">
+        <i class="fa fa-image"></i>
+      </button>
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
 
 <script src="/socket.io/socket.io.js"></script>
@@ -95,7 +63,7 @@
   const socket = io.connect("http://<%= domain %>/chat", {
     path: "/socket.io"
   });
-  document.getElementById("img").addEventListener("change", function(e) {
+  document.getElementById("img").addEventListener("change", function (e) {
     const formData = new FormData();
     const xhr = new XMLHttpRequest();
     const roomId = window.location.href.split("/")[
@@ -136,6 +104,10 @@
 
     msg.value = "";
   };
+
+  socket.on('redirect', (data) => {
+    window.location.href = `http://<%= domain %>/${data}`;
+  })
 
   socket.on("recvChat", _data => {
     const data = JSON.parse(_data);
