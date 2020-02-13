@@ -8,7 +8,7 @@ const router = Router();
 router.get("/kakao", passport.authenticate("kakao"));
 
 router.get(
-  "/oauth",
+  "/oauth/kakao",
   passport.authenticate("kakao", {
     failureRedirect: "/"
   }),
