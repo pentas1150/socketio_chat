@@ -21,14 +21,13 @@ router.post("/", async (req, res, next) => {
 router.get("/:roomId", isNotLoggedIn, async (req, res, next) => {
   const io = req.app.get("io");
   const room: Room = await Room.findOne({ where: { id: req.params.roomId } });
-  const users: string = room.userList;
-
   if (!room) {
     return res.send(
       "<script>alert('존재하지 않는 방입니다.'); window.location.href='/main';</script>"
     );
   }
 
+  const users: string = room.userList;
   const curUser: string = await insertUser(
     room.id,
     room.userList,
