@@ -6,7 +6,7 @@ socket.io를 이용하여 chatting server를 구현하였습니다.
 - [Express](https://expressjs.com/): 웹 프레임워크
 - [Socket.io](https://socket.io/): 웹 소켓
 - [Multer](https://www.npmjs.com/package/multer): 파일 업로드 패키지
-- [Sequelize](https://sequelize.org/): ORM(Object Relational Mapping) 패키지
+- [Sequelize](https://sequelize.org/): ORM(Object Relational Mapper) 패키지
 - [Passport](https://www.npmjs.com/package/passport): 회원가입 패키지 (Passport-kakao)
 
 # Results
