@@ -15,5 +15,8 @@ socket.io를 이용하여 chatting server를 구현하였습니다.
 3. express-session과 socket.io-session 연동
 
 # Troubleshooting
-*express-session과 socket.io-session이 연동 안되는 문제점 발생.
--접속 도메인이 달라 연동이 안되는 문제였음 ex) express는 192.168.0.35로 서버를 열었는데, socket.io는 localhost로 연결이 된 경우
+1. express-session과 socket.io-session이 연동 안되는 문제점 발생.
+  - 접속 도메인이 달라 연동이 안되는 문제였음 ex) express는 192.168.0.35로 서버를 열었는데, socket.io는 localhost로 연결이 된 경우
+
+2. passport에서 req에 추가한 user객체를 typescript에서 인식을 못함.
+  - node_modules/@types/passport/index.d.ts에서 interface 수정
