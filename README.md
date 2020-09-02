@@ -1,4 +1,5 @@
-# Socketio_chat
+# SocketIO_chat
+Project URL: https://github.com/pentas1150/socketio_chat
 
 # Introduction
 socket.io를 이용하여 chatting server를 구현하였습니다.
@@ -34,5 +35,3 @@ socket.io를 이용하여 chatting server를 구현하였습니다.
 
 2. passport에서 req에 추가한 user객체를 typescript에서 인식을 못함.
   - node_modules/@types/passport/index.d.ts에서 interface 수정
-
-Project URL: https://github.com/pentas1150/socketio_chat
