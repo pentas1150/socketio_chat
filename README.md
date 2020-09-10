@@ -23,7 +23,13 @@ socket.io를 이용하여 chatting server를 구현하였습니다.
 - 채팅 화면
 <img src="https://postfiles.pstatic.net/MjAyMDA5MDJfNzkg/MDAxNTk5MDI0MzM5MjYx.IDJ3953_aAlbI7mOZRoY_FHA_PqN0uLt4T6JDNQ_5dsg.9xen5uVYl9909A28DtFrSwlPbTC6hOCFq8-d4i6XQBsg.PNG.ffanys_/스크린샷_2020-09-02_오후_2.23.07.png?type=w966" width="600px">
 
-### How to Use
+### Notes
+1. 방 생성을 통한, 참여자별 채팅
+2. Kakao-oauth를 이용한 로그인
+3. express-session과 socket.io-session 연동
+4. multer를 이용하여 채팅방에 이미지 전송
+
+# How to Use
 - .env 파일 생성 후 아래의 변수명 기입
   - COOKIE : 쿠키의 시크릿 키
   - DB_ID : MySQL의 루트 아이디
@@ -31,12 +37,6 @@ socket.io를 이용하여 chatting server를 구현하였습니다.
   - DB_NAME : 해당 프로젝트와 연결할 DB의 이름
   - DOMAIN : 도메인명(or IP)과 포트번호 ex)localhost:3412
   - KAKAO_ID : 카카오 OAuth를 사용하기 위한 API키
-
-### Notes
-1. 방 생성을 통한, 참여자별 채팅
-2. Kakao-oauth를 이용한 로그인
-3. express-session과 socket.io-session 연동
-4. multer를 이용하여 채팅방에 이미지 전송
 
 # Troubleshooting
 1. express-session과 socket.io-session이 연동 안되는 문제점 발생.
